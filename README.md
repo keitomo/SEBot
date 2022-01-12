@@ -15,10 +15,14 @@ Open JTalkについては各自調べてください。
 
 # 実行方法  
 必要なライブラリを一括で追加  
-```pip install -r requirements.txt```  
+```
+pip install -r requirements.txt
+```  
 
 discord.uiを使用するためにpy-cordのみ別で追加  
-```pip install git+https://github.com/Pycord-Development/pycord```  
+```
+pip install git+https://github.com/Pycord-Development/pycord
+```  
 
 discordbot.py内の以下を書き換え
 ```
@@ -27,7 +31,9 @@ ownerid = os.environ['OWNER_ID']　　#自分のDiscordIDに書き換え
 ```
 
 実行コマンド  
-```python3 discordbot.py```　　
+```
+python3 discordbot.py
+```　　
 
 # 何かあったら　　
 まずは自分で調べてください。　　
