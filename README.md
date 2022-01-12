@@ -33,7 +33,7 @@ ownerid = os.environ['OWNER_ID']　　#自分のDiscordIDに書き換え
 実行コマンド  
 ```
 python3 discordbot.py
-```　　
+```
 
 # 何かあったら　　
 まずは自分で調べてください。　　
