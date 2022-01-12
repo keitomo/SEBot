@@ -6,7 +6,6 @@ certifi==2021.10.8
 cffi==1.15.0
 chardet==4.0.0
 charset-normalizer==2.0.9
-discord.py==1.7.3
 ffmpeg==1.4
 ffmpeg-python==0.2.0
 frozenlist==1.2.0
