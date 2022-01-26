@@ -140,7 +140,10 @@ class SECog(commands.Cog,name="SE-Bot"):
 
     @se.command(description="サーバーにSEを追加します",guild_ids=guild_list)
     async def add(self,ctx,word:Option(str,description="SEを流す正規表現")):
-        attachment = ctx.message.attachments[0]
+        await ctx.respond("ライブラリが対応していないため現在SEの追加はできません")
+        return
+        """
+        attachment = ctx.interaction.message.attachments[0]
         if attachment.content_type != "audio/mpeg":
             await ctx.respond("このファイルは登録できません")
             return
@@ -161,6 +164,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         await ctx.respond(embed=embed)
         with open(server_se_list, 'w') as f:
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
+        """
 
     @se.command(description="サーバーからSEを削除します",guild_ids=guild_list)
     async def delete(self,ctx,word:Option(str,description="削除する正規表現")):
