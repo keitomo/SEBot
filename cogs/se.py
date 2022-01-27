@@ -126,16 +126,11 @@ class SECog(commands.Cog,name="SE-Bot"):
         await ctx.respond("通話から切断しました")
 
     @se.command(description="登録されているSEを表示します",guild_ids=guild_list)
-    async def list(self,ctx):
+    async def list(self,ctx:discord.ApplicationContext):
         try:
-            await ctx.defer()
             paginator = pages.Paginator(pages=self.get_SEList(ctx.guild.id), show_disabled=False, show_indicator=True,author_check=False)
-            paginator.customize_button("next", button_label=">", button_style=discord.ButtonStyle.green)
-            paginator.customize_button("prev", button_label="<", button_style=discord.ButtonStyle.green)
-            paginator.customize_button("first", button_label="<<", button_style=discord.ButtonStyle.blurple)
-            paginator.customize_button("last", button_label=">>", button_style=discord.ButtonStyle.blurple)
-            await paginator.send(ctx, ephemeral=False)
-        except Exception:
+            await paginator.respond(ctx.interaction, ephemeral=False)
+        except Exception as e:
             await ctx.respond("辞書に登録されていません")
 
     @se.command(description="サーバーにSEを追加します",guild_ids=guild_list)
@@ -249,15 +244,11 @@ class SECog(commands.Cog,name="SE-Bot"):
     @se.command(description="サーバー辞書に登録されている単語を表示します",guild_ids=guild_list)
     async def lw(self,ctx):
         try:
-            await ctx.defer()
             paginator = pages.Paginator(pages=self.get_WORDList(ctx.guild.id), show_disabled=False, show_indicator=True,author_check=False)
-            paginator.customize_button("next", button_label=">", button_style=discord.ButtonStyle.green)
-            paginator.customize_button("prev", button_label="<", button_style=discord.ButtonStyle.green)
-            paginator.customize_button("first", button_label="<<", button_style=discord.ButtonStyle.blurple)
-            paginator.customize_button("last", button_label=">>", button_style=discord.ButtonStyle.blurple)
-            await paginator.send(ctx, ephemeral=False)
-        except Exception:
+            await paginator.respond(ctx.interaction, ephemeral=False)
+        except Exception as e:
             await ctx.respond("辞書に登録されていません")
+
 
     """
     @se.command(description="声質設定の詳しい説明が見れます")
