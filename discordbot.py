@@ -7,7 +7,6 @@ from discord.ext import commands
 token = os.environ['SE_BOT_TOKEN']
 ownerid = os.environ['OWNER_ID']
 
-
 INITIAL_EXTENSIONS = [
     'cogs.general',
     'cogs.valo',
@@ -27,6 +26,7 @@ class SEBot(commands.Bot):
         if not os.path.exists("guild_list.json"):
             with open("guild_list.json", 'w') as f:
                 f.write("[]")
+
         for cog in INITIAL_EXTENSIONS:
             try:
                 self.load_extension(cog)

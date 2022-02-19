@@ -97,7 +97,7 @@ def creat_WAV(message,s=None,server=None):
 
     cmd= command.format(**args)
 
-    subprocess.run(cmd,stdin=subprocess.PIPE,shell=True)
+    subprocess.run(cmd,stdin=subprocess.PIPE,shell=True,stdout = subprocess.DEVNULL)
     return ow
 
 if __name__ == '__main__':
