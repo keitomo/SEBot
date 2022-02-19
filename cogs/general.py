@@ -17,11 +17,11 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
     def strEmoji(self,emoji, i):
         return "<:"+emoji[i].name+":"+str(emoji[i].id)+">"
 
-    @commands.slash_command(guild_ids=guild_list,description="Botがチャット欄で鳴きます")
+    @commands.slash_command(name="neko",guild_ids=guild_list,description="Botがチャット欄で鳴きます")
     async def neko(self,ctx):
         await ctx.respond("にゃーん")
 
-    @commands.slash_command(guild_ids=guild_list,description="簡単な四則演算をしてくれます。")
+    @commands.slash_command(name="calc",guild_ids=guild_list,description="簡単な四則演算をしてくれます。")
     async def calc(self,ctx,formula: Option(str, '数式を入力してください')):
         try:
             f=re.sub('[a-zA-Z]','',formula)
@@ -30,10 +30,11 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
             for k,v in replacelist.items():
                 formula=formula.replace(k,v)
             await ctx.respond(formula+"=**"+result+"**")
-        except Exception:
+        except Exception as e:
             await ctx.respond("計算できませんでした・・・")
+            print(e)
 
-    @commands.slash_command(guild_ids=guild_list,description="へぇボタンです")
+    @commands.slash_command(name="reaction",guild_ids=guild_list,description="へぇボタンです")
     async def reac(self,ctx):
 
         button = Button(label="へぇ",style=discord.ButtonStyle.secondary,emoji="✋")
@@ -72,6 +73,23 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
             for g in self.bot.guilds:
                 guild_list+=g.name+":"+str(g.id)+"\n"
             await ctx.send(guild_list)
+        else:
+            await ctx.send("権限がありません")
+
+    @commands.command(hidden=True)
+    async def reset_command(self,ctx):
+        if (self.bot.is_owner(ctx.author)):
+            for cog in self.bot.cogs.values():
+                for command in cog.get_commands():
+                    if isinstance(command,discord.commands.SlashCommand):
+                        #print(command)
+                        remove_application_command(command)
+                    if isinstance(command,discord.commands.SlashCommandGroup):
+                        for com in command.walk_commands():
+                            if isinstance(com,discord.commands.SlashCommand):
+                                #print(com)
+                                remove_application_command(com)
+            await ctx.send("Botの再起動が必要です")
         else:
             await ctx.send("権限がありません")
 
