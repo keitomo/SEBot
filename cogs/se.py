@@ -7,7 +7,7 @@ from discord.commands import Option,SlashCommandGroup
 import asyncio
 from voice_generator import creat_WAV
 import queue
-import os
+import os,requests
 import json
 import pydub
 import re
@@ -81,6 +81,18 @@ class SECog(commands.Cog,name="SE-Bot"):
                 embed=discord.Embed(title="単語辞書")
         return result
 
+    def get_File(self,url,path):#スラッシュコマンドがアタッチメントに対応するまで
+        filename=os.path.basename(url)
+        if not filename.endswith((".mp3",".wav")):
+            raise Exception("illegal file!")
+        r = requests.get(url, stream=True)
+        with open(path+filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+        return filename
+
 
     se = SlashCommandGroup("se", "seや読み上げに関連するコマンド",guild_ids=guild_list)
 
@@ -134,9 +146,29 @@ class SECog(commands.Cog,name="SE-Bot"):
             await ctx.respond("辞書に登録されていません")
 
     @se.command(description="サーバーにSEを追加します",guild_ids=guild_list)
-    async def add(self,ctx,word:Option(str,description="SEを流す正規表現")):
-        await ctx.respond("ライブラリが対応していないため現在SEの追加はできません")
-        return
+    async def add(self,ctx,word:Option(str,description="SEを流す正規表現"),url:Option(str,description="SEファイルのURL")):
+        guild=ctx.guild
+        server_se_path = './SE/'+str(guild.id)+"/"
+        server_se_list = './SE/'+str(guild.id)+"/list.json"
+        if not os.path.exists(server_se_list):
+            os.makedirs(server_se_path)
+            with open(server_se_list, 'w') as f:
+                f.write("{}")
+        try:
+            filename=self.get_File(url,server_se_path)
+        except Exception as e:
+            await ctx.respond("ファイルをDLできませんでした")
+            print(e)
+            return
+        with open(server_se_list, 'r') as f:
+            server_dict=json.load(f)
+        server_dict[str(word)]=filename
+        embed = discord.Embed(title="以下のSEを追加しました")
+        embed.add_field(name="正規表現", value=word,inline=True)
+        embed.add_field(name="再生ファイル", value=server_dict[str(word)],inline=True)
+        await ctx.respond(embed=embed)
+        with open(server_se_list, 'w') as f:
+            json.dump(server_dict,f,indent=4,ensure_ascii=False)
         """
         attachment = ctx.interaction.message.attachments[0]
         if attachment.content_type != "audio/mpeg":
