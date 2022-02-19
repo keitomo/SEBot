@@ -96,7 +96,7 @@ class SECog(commands.Cog,name="SE-Bot"):
 
     se = SlashCommandGroup("se", "seや読み上げに関連するコマンド",guild_ids=guild_list)
 
-    @se.command(description="SE-Botが通話に参加します",guild_ids=guild_list)
+    @se.command(name="se_cn",description="SE-Botが通話に参加します",guild_ids=guild_list)
     async def cn(self,ctx):
         guild=ctx.guild
         vc = ctx.guild.voice_client
@@ -129,7 +129,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         await ctx.respond("通話に参加しました")
 
 
-    @se.command(description="SE-Botが通話から切断します",guild_ids=guild_list)
+    @se.command(name="se_dc",description="SE-Botが通話から切断します",guild_ids=guild_list)
     async def dc(self,ctx):
         if ctx.guild.voice_client == None :
             await ctx.respond("SE-Botは通話に参加していません")
@@ -137,7 +137,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         await self.disconnect_server(ctx.guild)
         await ctx.respond("通話から切断しました")
 
-    @se.command(description="登録されているSEを表示します",guild_ids=guild_list)
+    @se.command(name="se_list",description="登録されているSEを表示します",guild_ids=guild_list)
     async def list(self,ctx:discord.ApplicationContext):
         try:
             paginator = pages.Paginator(pages=self.get_SEList(ctx.guild.id), show_disabled=False, show_indicator=True,author_check=False)
@@ -145,7 +145,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         except Exception as e:
             await ctx.respond("辞書に登録されていません")
 
-    @se.command(description="サーバーにSEを追加します",guild_ids=guild_list)
+    @se.command(name="se_add",description="サーバーにSEを追加します",guild_ids=guild_list)
     async def add(self,ctx,word:Option(str,description="SEを流す正規表現"),url:Option(str,description="SEファイルのURL")):
         guild=ctx.guild
         server_se_path = './SE/'+str(guild.id)+"/"
@@ -193,7 +193,7 @@ class SECog(commands.Cog,name="SE-Bot"):
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
         """
 
-    @se.command(description="サーバーからSEを削除します",guild_ids=guild_list)
+    @se.command(name="se_delete",description="サーバーからSEを削除します",guild_ids=guild_list)
     async def delete(self,ctx,word:Option(str,description="削除する正規表現")):
         guild=ctx.guild
         server_se_path = './SE/'+str(guild.id)+"/"
@@ -219,7 +219,7 @@ class SECog(commands.Cog,name="SE-Bot"):
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
 
 
-    @se.command(description="声質を設定します",guild_ids=guild_list)
+    @se.command(name="se_voice_set",description="声質を設定します",guild_ids=guild_list)
     async def voice_set(self,ctx,
                 m:Option(str,choices=["angry","bashful","normal","happy","sad"],description="声質"),
                 r:Option(float,description="速さ",min_value=0.0),
@@ -236,7 +236,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         embed.add_field(name="オールパス値", value=a)
         await ctx.respond("声質を変更しました",embed=embed)
 
-    @se.command(description="サーバー辞書に単語を追加します",guild_ids=guild_list)
+    @se.command(name="se_add_word",description="サーバー辞書に単語を追加します",guild_ids=guild_list)
     async def aw(self,ctx,word:Option(str,"単語"),reading:Option(str,"読み")):
         server_dict_path = './dict/'+str(ctx.guild.id)+'.json'
         if not os.path.exists(server_dict_path):
@@ -252,7 +252,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         with open(server_dict_path, 'w') as f:
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
 
-    @se.command(description="サーバー辞書から単語を削除します",guild_ids=guild_list)
+    @se.command(name="se_delete_word",description="サーバー辞書から単語を削除します",guild_ids=guild_list)
     async def dw(self,ctx,word:Option(str,"削除する単語")):
         server_dict_path = './dict/'+str(ctx.guild.id)+'.json'
         if not os.path.exists(server_dict_path):
@@ -273,7 +273,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         with open(server_dict_path, 'w') as f:
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
 
-    @se.command(description="サーバー辞書に登録されている単語を表示します",guild_ids=guild_list)
+    @se.command(name="se_list_word",description="サーバー辞書に登録されている単語を表示します",guild_ids=guild_list)
     async def lw(self,ctx):
         try:
             paginator = pages.Paginator(pages=self.get_WORDList(ctx.guild.id), show_disabled=False, show_indicator=True,author_check=False)
@@ -291,7 +291,7 @@ class SECog(commands.Cog,name="SE-Bot"):
         await ctx.send("オールパス値：0.0~1.0 の間で指定するとなんか変わります")
     """
 
-    @se.command(description="今の声質の設定が見れます",guild_ids=guild_list)
+    @se.command(name="se_voice_show",description="今の声質の設定が見れます",guild_ids=guild_list)
     async def voice_show(self,ctx):
         with open('./voice/'+str(ctx.author.id)+'.json','r') as f:
             df = json.load(f)
