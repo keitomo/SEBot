@@ -81,19 +81,6 @@ class SECog(commands.Cog,name="SE-Bot"):
                 embed=discord.Embed(title="単語辞書")
         return result
 
-    def get_File(self,url,path):#スラッシュコマンドがアタッチメントに対応するまで
-        filename=os.path.basename(url)
-        if not filename.endswith((".mp3",".wav")):
-            raise Exception("illegal file!")
-        r = requests.get(url, stream=True)
-        with open(path+filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
-                    f.flush()
-        return filename
-
-
     se = SlashCommandGroup("se", "seや読み上げに関連するコマンド",guild_ids=guild_list)
 
     @se.command(name="cn",description="SE-Botが通話に参加します",guild_ids=guild_list)
@@ -146,7 +133,7 @@ class SECog(commands.Cog,name="SE-Bot"):
             await ctx.respond("辞書に登録されていません")
 
     @se.command(name="add",description="サーバーにSEを追加します",guild_ids=guild_list)
-    async def add(self,ctx,word:Option(str,description="SEを流す正規表現"),url:Option(str,description="SEファイルのURL")):
+    async def add(self,ctx,word:Option(str,description="SEを流す正規表現"),attachment:Option(discord.Attachment,description="SEファイル")):
         guild=ctx.guild
         server_se_path = './SE/'+str(guild.id)+"/"
         server_se_list = './SE/'+str(guild.id)+"/list.json"
@@ -154,23 +141,6 @@ class SECog(commands.Cog,name="SE-Bot"):
             os.makedirs(server_se_path)
             with open(server_se_list, 'w') as f:
                 f.write("{}")
-        try:
-            filename=self.get_File(url,server_se_path)
-        except Exception as e:
-            await ctx.respond("ファイルをDLできませんでした")
-            print(e)
-            return
-        with open(server_se_list, 'r') as f:
-            server_dict=json.load(f)
-        server_dict[str(word)]=filename
-        embed = discord.Embed(title="以下のSEを追加しました")
-        embed.add_field(name="正規表現", value=word,inline=True)
-        embed.add_field(name="再生ファイル", value=server_dict[str(word)],inline=True)
-        await ctx.respond(embed=embed)
-        with open(server_se_list, 'w') as f:
-            json.dump(server_dict,f,indent=4,ensure_ascii=False)
-        """
-        attachment = ctx.interaction.message.attachments[0]
         if attachment.content_type != "audio/mpeg":
             await ctx.respond("このファイルは登録できません")
             return
@@ -191,7 +161,6 @@ class SECog(commands.Cog,name="SE-Bot"):
         await ctx.respond(embed=embed)
         with open(server_se_list, 'w') as f:
             json.dump(server_dict,f,indent=4,ensure_ascii=False)
-        """
 
     @se.command(name="delete",description="サーバーからSEを削除します",guild_ids=guild_list)
     async def delete(self,ctx,word:Option(str,description="削除する正規表現")):
