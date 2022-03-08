@@ -2,7 +2,7 @@ import discord
 from discord.ui import Button,View
 from discord.ext import commands
 from discord.commands import Option
-import re
+import re,os
 import json
 
 guild_list=None
@@ -92,6 +92,35 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
             await ctx.send("Botの再起動が必要です")
         else:
             await ctx.send("権限がありません")
+
+    @commands.command(hidden=True)
+    async def gsend(self,ctx):
+        if (self.bot.is_owner(ctx.author)):
+            for g in self.bot.guilds:
+                server_conf = './guildconf/'+str(g.id)+'.json'
+                if not os.path.exists(server_conf):
+                    with open(server_conf, 'w') as f:
+                            f.write("{}")
+                with open(server_conf, 'r') as f:
+                    server_conf_dict=json.load(f)
+                await self.bot.get_channel(server_conf_dict["notifiction"]).send(ctx.message.content.replace("/gsend ",""))
+        else:
+            await ctx.send("権限がありません")
+
+
+    @commands.Cog.listener()
+    async def on_guild_update(self,before,after):
+        if before.name != after.name:
+            server_conf = './guildconf/'+str(before.id)+'.json'
+            if not os.path.exists(server_conf):
+                with open(server_conf, 'w') as f:
+                        f.write("{}")
+            with open(server_conf, 'r') as f:
+                server_conf_dict=json.load(f)
+            server_conf_dict["name"]=after.name
+            with open(server_conf, 'w') as f:
+                json.dump(server_conf_dict,f,indent=4,ensure_ascii=False)
+
 
 def setup(bot):
     bot.add_cog(GeneralCommands(bot))
