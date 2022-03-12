@@ -103,7 +103,10 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
                             f.write("{}")
                 with open(server_conf, 'r') as f:
                     server_conf_dict=json.load(f)
-                await self.bot.get_channel(server_conf_dict["notifiction"]).send(ctx.message.content.replace("/gsend ",""))
+                try:
+                    await self.bot.get_channel(server_conf_dict["notifiction"]).send(ctx.message.content.replace("/gsend ",""))
+                except:
+                    pass
         else:
             await ctx.send("権限がありません")
 
