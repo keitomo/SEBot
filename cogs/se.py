@@ -191,9 +191,9 @@ class SECog(commands.Cog,name="SE-Bot"):
     @se.command(name="voice_set",description="声質を設定します",guild_ids=guild_list)
     async def voice_set(self,ctx,
                 m:Option(str,choices=["angry","bashful","normal","happy","sad"],description="声質"),
-                r:Option(float,description="速さ",min_value=0.0),
-                fm:Option(float,description="ピッチ"),
-                a:Option(float,description="オールパス値",min_value=0.0,max_value=1.0)):
+                r:Option(float,description="速さ",min_value=0.5,max_value=2.0),
+                fm:Option(float,description="ピッチ",min_value=-24,max_value=24),
+                a:Option(float,description="オールパス値",min_value=-0.8,max_value=0.8)):
         SECog.user_voice[str(ctx.author.id)]={"m":m,"r":str(r),"fm":str(fm),"a":str(a)}
         with open('./voiceconf/'+str(ctx.author.id)+'.json', 'w') as f:
             json.dump(SECog.user_voice[str(ctx.author.id)],f,indent=4)
@@ -262,7 +262,7 @@ class SECog(commands.Cog,name="SE-Bot"):
 
     @se.command(name="voice_show",description="今の声質の設定が見れます",guild_ids=guild_list)
     async def voice_show(self,ctx):
-        with open('./voice/'+str(ctx.author.id)+'.json','r') as f:
+        with open('./voiceconf/'+str(ctx.author.id)+'.json','r') as f:
             df = json.load(f)
         embedTitle = ctx.author.name+"の声質設定"
         embed = discord.Embed(title=embedTitle)
