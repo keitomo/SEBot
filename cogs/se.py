@@ -233,7 +233,7 @@ class SECog(commands.Cog,name="SE-Bot"):
             keyword=word
             valueword=server_dict[str(word)]
             del server_dict[str(word)]
-            embed = discord.Embed(title="以下の単語をサーバー辞書から削除しました",guild_ids=guild_list)
+            embed = discord.Embed(title="以下の単語をサーバー辞書から削除しました")
             embed.add_field(name="単語", value=keyword,inline=True)
             embed.add_field(name="読み", value=valueword,inline=True)
             await ctx.respond(embed=embed)
