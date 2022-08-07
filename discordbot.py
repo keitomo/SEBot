@@ -1,6 +1,8 @@
 import os
 import traceback
 import discord
+import os.path
+import re
 from discord.ext import commands
 
 #環境変数読み込み
@@ -11,8 +13,12 @@ INITIAL_EXTENSIONS = [
     'cogs.general',
     'cogs.valo',
     'cogs.se',
+	'cogs.control',
     #'cogs.test',
 ]
+
+# 通知管理用ファイルパス指定
+listFilePath = 'list.txt'
 
 class SEBot(commands.Bot):
 
@@ -40,6 +46,7 @@ class SEBot(commands.Bot):
 
     def is_owner(self, user):
         return int(user.id)==int(self.owner_id)
+
 
 if __name__ == '__main__':
     client = SEBot(command_prefix="/",owner_id=ownerid)

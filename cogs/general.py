@@ -4,8 +4,11 @@ from discord.ext import commands
 from discord.commands import Option
 import re,os
 import json
+import requests
 
 guild_list=None
+
+EC2_END=os.getenv("EC2_END")
 
 class GeneralCommands(commands.Cog,name="一般的なコマンド"):
 
@@ -54,7 +57,21 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
         embed = discord.Embed(title="うなずきボタン")
         embed.add_field(name="へぇ",value=str(0))
         await ctx.respond(embed=embed,view=view)
-
+        
+    @commands.command(hidden=True,name="mcs",description="ゆうしゅんぐるマイクラサーバー用")
+    async def mcs(self,ctx):
+        print("called mcs!")
+        if ctx.guild.id!=785886897868111912:
+            await ctx.send("このサーバーでは実行できません")
+            return
+        else:
+             mes =  await ctx.send("サーバーを起動中です・・・")
+        result = requests.get(EC2_END).json().get("statusCode")
+        if result==200:
+            await mes.edit(content="サーバーが起動しました！")
+        else:
+            await mes.edit(content="サーバーが起動しませんでした・・・")
+            
     @commands.command(hidden=True)
     async def leave(self,ctx,arg):
         if (self.bot.is_owner(ctx.author)):
@@ -81,14 +98,18 @@ class GeneralCommands(commands.Cog,name="一般的なコマンド"):
         if (self.bot.is_owner(ctx.author)):
             for cog in self.bot.cogs.values():
                 for command in cog.get_commands():
-                    if isinstance(command,discord.commands.SlashCommand):
-                        #print(command)
-                        remove_application_command(command)
-                    if isinstance(command,discord.commands.SlashCommandGroup):
-                        for com in command.walk_commands():
-                            if isinstance(com,discord.commands.SlashCommand):
-                                #print(com)
-                                remove_application_command(com)
+                    try:
+                        if isinstance(command,discord.commands.SlashCommand):
+                            #print(command)
+                            self.bot.remove_application_command(command)
+                        if isinstance(command,discord.commands.SlashCommandGroup):
+                            for com in command.walk_commands():
+                                if isinstance(com,discord.commands.SlashCommand):
+                                    #print(com)
+                                    self.bot.remove_application_command(com)
+                    except AttributeError as e:
+                        print(e,":")
+                        print(command)
             await ctx.send("Botの再起動が必要です")
         else:
             await ctx.send("権限がありません")
