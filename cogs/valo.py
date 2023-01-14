@@ -29,7 +29,7 @@ class ValoCog(commands.Cog,name="Valorant"):
 
     def valorand(self,ctx):
         valoplayer = ValoCog.GetValoList(self,ctx)
-        map_list=["アセント","バインド","スプリット","ヘイブン","アイスボックス","ブリーズ","フラクチャー"]
+        map_list=["アセント","バインド","スプリット","ヘイブン","アイスボックス","ブリーズ","フラクチャー","パール","ロータス"]
         maps=random.sample(map_list, len(map_list))
         valolist = random.sample(valoplayer, len(valoplayer))
         attackers = "None"
