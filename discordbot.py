@@ -3,7 +3,10 @@ import traceback
 import discord
 import os.path
 import re
+from dotenv import load_dotenv
 from discord.ext import commands
+
+load_dotenv()
 
 #環境変数読み込み
 token = os.environ['SE_BOT_TOKEN']
